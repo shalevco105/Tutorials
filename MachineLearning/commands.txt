@@ -1,0 +1,101 @@
+run jupyter notebook
+
+take from kaggle db - csv file
+put near the file from jupyter and than to print:
+-
+import pandas as pd
+df = pd.read_csv('vgsales.csv')
+df
+-
+df.shape will take the colls x rows - (16598, 11)
+
+* its possible to write anoder commands in the next field like - df.discribe() whice bring analyst like min/max/count...
+df.values - as array
+
+--------------------------------------------------------
+prediction of musice type 
+
+import pandas as pd
+from sklearn.tree import DecisionTreeClassifier
+
+music_data = pd.read_csv('music.csv')
+x = music_data.drop(columns=['genre']) #table without col genre
+y = music_data['genre'] #get only specific col
+
+model = DecisionTreeClassifier() # use tree algo
+model.fit(x, y) # machine practice 
+predictions = model.predict([ [21, 1], [22, 0] ]) #prediction
+predictions
+
+-----------------------------------------------
+import pandas as pd
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+
+music_data = pd.read_csv('music.csv')
+x = music_data.drop(columns=['genre']) #table without col genre
+y = music_data['genre'] #get only specific col
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size = 0.2) #split 
+
+model = DecisionTreeClassifier() # use tree algo
+model.fit(x_train, y_train) # machine practice 
+predictions = model.predict(x_test) #prediction random
+
+score = accuracy_score(y_test, predictions)  #real vs predict
+score
+
+------------------------------------------------
+for ssend it to file: 
+
+import pandas as pd
+from sklearn.tree import DecisionTreeClassifier
+import joblib 
+
+music_data = pd.read_csv('music.csv')
+x = music_data.drop(columns=['genre']) #table without col genre
+y = music_data['genre'] #get only specific col
+
+model = DecisionTreeClassifier() # use tree algo
+model.fit(x, y) # machine practice 
+
+joblib.dump(model, 'music-recommender.joblib')  #send to file
+
+# predictions = model.predict([[21,1]]) #prediction random
+
+  than you can just load file and predict: 
+
+import pandas as pd
+from sklearn.tree import DecisionTreeClassifier
+import joblib 
+
+# music_data = pd.read_csv('music.csv')
+# x = music_data.drop(columns=['genre']) #table without col genre
+# y = music_data['genre'] #get only specific col
+
+# model = DecisionTreeClassifier() # use tree algo
+# model.fit(x, y) # machine practice 
+
+joblib.load('music-recommender.joblib')  #send to file   #load file
+predictions = model.predict([[21,1]]) #prediction random
+predictions
+
+______________________________________
+tree file to vs code:
+
+import pandas as pd
+from sklearn.tree import DecisionTreeClassifier
+from sklearn import tree
+
+music_data = pd.read_csv('music.csv')
+x = music_data.drop(columns=['genre']) #table without col genre
+y = music_data['genre'] #get only specific col
+
+model = DecisionTreeClassifier() # use tree algo
+model.fit(x, y) # machine practice 
+tree.export_graphviz(model, out_file='music-recommender.dot',
+                    feature_names=['age', 'gender'],  #rules by this 
+                    class_names=sorted(y.unique()),  #make class name unique
+                    label='all',  #give labels
+                    rounded=True,  #rounded corner
+                    filled=True)   #colors
